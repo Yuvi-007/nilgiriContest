@@ -14,16 +14,252 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_log: {
+        Row: {
+          action: string
+          actor_login_id: string | null
+          created_at: string
+          details: Json
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_login_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_login_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+        }
+        Relationships: []
+      }
+      contest_questions: {
+        Row: {
+          contest_id: string
+          position: number
+          question_id: string
+        }
+        Insert: {
+          contest_id: string
+          position: number
+          question_id: string
+        }
+        Update: {
+          contest_id?: string
+          position?: number
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contest_questions_contest_id_fkey"
+            columns: ["contest_id"]
+            isOneToOne: false
+            referencedRelation: "contests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contest_questions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contest_results: {
+        Row: {
+          contest_id: string
+          score: number
+          submitted_at: string
+          time_taken_seconds: number
+          user_id: string
+        }
+        Insert: {
+          contest_id: string
+          score?: number
+          submitted_at?: string
+          time_taken_seconds?: number
+          user_id: string
+        }
+        Update: {
+          contest_id?: string
+          score?: number
+          submitted_at?: string
+          time_taken_seconds?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contest_results_contest_id_fkey"
+            columns: ["contest_id"]
+            isOneToOne: false
+            referencedRelation: "contests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contests: {
+        Row: {
+          created_at: string
+          description: string
+          duration_minutes: number
+          end_time: string
+          id: string
+          is_draft: boolean
+          is_practice: boolean
+          show_solutions_after_close: boolean
+          start_time: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          duration_minutes?: number
+          end_time: string
+          id?: string
+          is_draft?: boolean
+          is_practice?: boolean
+          show_solutions_after_close?: boolean
+          start_time: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          duration_minutes?: number
+          end_time?: string
+          id?: string
+          is_draft?: boolean
+          is_practice?: boolean
+          show_solutions_after_close?: boolean
+          start_time?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      login_attempts: {
+        Row: {
+          failed_count: number
+          locked_until: string | null
+          login_id: string
+          updated_at: string
+        }
+        Insert: {
+          failed_count?: number
+          locked_until?: string | null
+          login_id: string
+          updated_at?: string
+        }
+        Update: {
+          failed_count?: number
+          locked_until?: string | null
+          login_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          login_id: string
+          must_change_password: boolean
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id: string
+          login_id: string
+          must_change_password?: boolean
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          login_id?: string
+          must_change_password?: boolean
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          body: string
+          correct_option: number | null
+          created_at: string
+          difficulty: Database["public"]["Enums"]["difficulty"] | null
+          id: string
+          marks: number
+          options: Json | null
+          title: string
+          type: Database["public"]["Enums"]["question_type"]
+        }
+        Insert: {
+          body: string
+          correct_option?: number | null
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["difficulty"] | null
+          id?: string
+          marks: number
+          options?: Json | null
+          title: string
+          type: Database["public"]["Enums"]["question_type"]
+        }
+        Update: {
+          body?: string
+          correct_option?: number | null
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["difficulty"] | null
+          id?: string
+          marks?: number
+          options?: Json | null
+          title?: string
+          type?: Database["public"]["Enums"]["question_type"]
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      mark_password_changed: { Args: never; Returns: undefined }
+      next_contest_start: { Args: never; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "student"
+      difficulty: "easy" | "medium" | "hard"
+      question_type: "mcq" | "coding"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +386,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "student"],
+      difficulty: ["easy", "medium", "hard"],
+      question_type: ["mcq", "coding"],
+    },
   },
 } as const
