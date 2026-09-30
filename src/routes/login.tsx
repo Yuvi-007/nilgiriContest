@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
@@ -27,6 +27,7 @@ export const Route = createFileRoute("/login")({
 function Login() {
   const login = useServerFn(loginWithId);
   const navigate = useNavigate();
+  const router = useRouter();
   const { redirect } = Route.useSearch();
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
@@ -50,8 +51,7 @@ function Login() {
       if (info.mustChangePassword) return navigate({ to: "/change-password" });
       // Only same-origin relative paths are honoured.
       if (redirect && redirect.startsWith("/") && !redirect.startsWith("//")) {
-        window.history.replaceState(null, "", redirect);
-        return navigate({ to: redirect as "/" });
+        return router.history.push(redirect);
       }
       navigate({ to: homeFor(info.role) });
     } catch {
