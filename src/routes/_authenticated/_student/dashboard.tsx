@@ -85,9 +85,7 @@ function Dashboard() {
             <h1 className="text-2xl font-extrabold tracking-tight">
               Hi, <span className="text-gradient">{firstName}</span> 👋
             </h1>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              {authInfo.fullName} · Student
-            </p>
+            <p className="mt-0.5 text-sm text-muted-foreground">{authInfo.fullName} · Student</p>
           </div>
         </div>
         <Link

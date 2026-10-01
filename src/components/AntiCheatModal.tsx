@@ -63,11 +63,10 @@ export function AntiCheatModal({
 
           {isDisqualified ? (
             <div className="mt-5 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-center">
-              <p className="text-sm font-semibold text-destructive">
-                Violation Limit Exceeded.
-              </p>
+              <p className="text-sm font-semibold text-destructive">Violation Limit Exceeded.</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                Your test attempt has been automatically locked and submitted due to academic integrity policy.
+                Your test attempt has been automatically locked and submitted due to academic
+                integrity policy.
               </p>
             </div>
           ) : (
@@ -81,7 +80,8 @@ export function AntiCheatModal({
                 I understand — Continue Exam
               </Button>
               <p className="text-center text-[11px] text-muted-foreground">
-                {MAX_STRIKES - warning.strike} strike{MAX_STRIKES - warning.strike === 1 ? "" : "s"} remaining before automatic submission.
+                {MAX_STRIKES - warning.strike} strike{MAX_STRIKES - warning.strike === 1 ? "" : "s"}{" "}
+                remaining before automatic submission.
               </p>
             </div>
           )}
@@ -100,13 +100,10 @@ export function AntiCheatModal({
           </div>
           <h2 className="mt-4 text-xl font-extrabold text-foreground">Fullscreen Required</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            This examination requires an uninterrupted fullscreen environment. All background apps, secondary displays, and desktop interactions are restricted.
+            This examination requires an uninterrupted fullscreen environment. All background apps,
+            secondary displays, and desktop interactions are restricted.
           </p>
-          <Button
-            size="lg"
-            className="mt-6 w-full gap-2 font-bold"
-            onClick={onReenterFullscreen}
-          >
+          <Button size="lg" className="mt-6 w-full gap-2 font-bold" onClick={onReenterFullscreen}>
             <Maximize2 className="h-4 w-4" /> Return to Fullscreen
           </Button>
         </div>

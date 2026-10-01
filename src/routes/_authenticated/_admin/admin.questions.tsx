@@ -90,7 +90,7 @@ function Questions() {
         .select("*")
         .order("type", { ascending: false })
         .order("marks");
-      return ((data ?? []) as unknown) as QuestionRow[];
+      return (data ?? []) as unknown as QuestionRow[];
     },
   });
 
@@ -232,7 +232,10 @@ function Questions() {
       {message && (
         <div className="mb-5 flex items-center justify-between rounded-xl border border-border bg-bg3 p-4 text-sm text-foreground">
           <span>{message}</span>
-          <button onClick={() => setMessage(null)} className="text-muted-foreground hover:text-foreground">
+          <button
+            onClick={() => setMessage(null)}
+            className="text-muted-foreground hover:text-foreground"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -243,8 +246,12 @@ function Questions() {
         <GlassCard className="mb-8 border-violet/30 shadow-2xl">
           <div className="flex items-center justify-between border-b border-border pb-4">
             <div>
-              <h2 className="text-lg font-bold">{draft.id ? "Edit question" : "Create new question"}</h2>
-              <p className="text-xs text-muted-foreground">Add question prompt, options, code test cases, and diagrams.</p>
+              <h2 className="text-lg font-bold">
+                {draft.id ? "Edit question" : "Create new question"}
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                Add question prompt, options, code test cases, and diagrams.
+              </p>
             </div>
             <Button variant="ghost" size="sm" onClick={() => setDraft(null)}>
               <X className="h-4 w-4" /> Cancel
@@ -287,7 +294,9 @@ function Questions() {
                 </label>
               ) : (
                 <div className="flex items-center text-xs text-muted-foreground pt-5">
-                  <span className="rounded-full bg-cyan/10 px-3 py-1 font-mono text-cyan">Standard MCQ = 1 Mark</span>
+                  <span className="rounded-full bg-cyan/10 px-3 py-1 font-mono text-cyan">
+                    Standard MCQ = 1 Mark
+                  </span>
                 </div>
               )}
             </div>
@@ -341,7 +350,8 @@ function Questions() {
                     <p className="font-semibold text-foreground">Image attached</p>
                     <p className="mt-1 font-mono text-[11px] truncate max-w-xs">{draft.imageUrl}</p>
                     <p className="mt-2 text-green flex items-center gap-1">
-                      <CheckCircle2 className="h-3.5 w-3.5" /> Will be displayed directly to students in the arena
+                      <CheckCircle2 className="h-3.5 w-3.5" /> Will be displayed directly to
+                      students in the arena
                     </p>
                   </div>
                 </div>
@@ -350,7 +360,9 @@ function Questions() {
                   <label className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border/70 p-6 text-center cursor-pointer transition-colors hover:border-cyan/50 hover:bg-cyan/5">
                     <Upload className="h-6 w-6 text-muted-foreground" />
                     <span className="mt-2 text-xs font-semibold text-foreground">
-                      {uploadingImage ? "Uploading diagram..." : "Click or drag to upload question diagram"}
+                      {uploadingImage
+                        ? "Uploading diagram..."
+                        : "Click or drag to upload question diagram"}
                     </span>
                     <span className="mt-1 text-[11px] text-muted-foreground">
                       PNG, JPG, SVG, WebP up to 5MB
@@ -466,20 +478,28 @@ function Questions() {
         <p className="text-muted-foreground">Loading questions...</p>
       ) : filteredQuestions.length === 0 ? (
         <GlassCard className="text-center py-12">
-          <p className="text-muted-foreground font-medium">No questions matched your search/filter.</p>
+          <p className="text-muted-foreground font-medium">
+            No questions matched your search/filter.
+          </p>
         </GlassCard>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {filteredQuestions.map((q) => (
-            <GlassCard key={q.id} className="flex flex-col justify-between hover:border-border/80 transition-colors">
+            <GlassCard
+              key={q.id}
+              className="flex flex-col justify-between hover:border-border/80 transition-colors"
+            >
               <div>
                 <div className="flex items-start justify-between gap-3 font-mono text-xs">
                   <div className="flex items-center gap-2">
                     <span className="rounded-md bg-violet/10 px-2 py-0.5 font-bold uppercase text-violet">
                       {q.type}
                     </span>
-                    <span className={`font-semibold ${q.difficulty ? diffColor[q.difficulty] : "text-cyan"}`}>
-                      {q.difficulty ? `${q.difficulty} · ` : ""}{q.marks} mark{q.marks > 1 ? "s" : ""}
+                    <span
+                      className={`font-semibold ${q.difficulty ? diffColor[q.difficulty] : "text-cyan"}`}
+                    >
+                      {q.difficulty ? `${q.difficulty} · ` : ""}
+                      {q.marks} mark{q.marks > 1 ? "s" : ""}
                     </span>
                     {q.image_url && (
                       <span className="flex items-center gap-1 rounded-full bg-cyan/10 px-2 py-0.5 text-[10px] font-bold text-cyan">
@@ -519,7 +539,9 @@ function Questions() {
                 </div>
 
                 <h3 className="mt-3 font-bold text-foreground line-clamp-1">{q.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground line-clamp-2 leading-relaxed">{q.body}</p>
+                <p className="mt-1 text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                  {q.body}
+                </p>
 
                 {q.image_url && (
                   <div className="mt-3">
@@ -555,14 +577,17 @@ function Questions() {
           <div className="w-full max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <span className="font-mono text-xs uppercase text-cyan font-bold">
-                {previewQuestion.type} · {previewQuestion.marks} marks {previewQuestion.difficulty ? `(${previewQuestion.difficulty})` : ""}
+                {previewQuestion.type} · {previewQuestion.marks} marks{" "}
+                {previewQuestion.difficulty ? `(${previewQuestion.difficulty})` : ""}
               </span>
               <Button variant="ghost" size="sm" onClick={() => setPreviewQuestion(null)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
             <h2 className="mt-4 text-xl font-bold text-foreground">{previewQuestion.title}</h2>
-            <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{previewQuestion.body}</p>
+            <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+              {previewQuestion.body}
+            </p>
 
             {previewQuestion.image_url && (
               <div className="mt-4 rounded-xl border border-border bg-black/40 p-2">

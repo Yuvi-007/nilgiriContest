@@ -52,10 +52,12 @@ function ContestsDropdown({ onClose }: { onClose?: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const { data: contests = [] } = useQuery(contestsQuery);
 
-  const active = contests.filter((c) => {
-    const s = contestStatus(c);
-    return s === "live" || s === "scheduled";
-  }).slice(0, 6);
+  const active = contests
+    .filter((c) => {
+      const s = contestStatus(c);
+      return s === "live" || s === "scheduled";
+    })
+    .slice(0, 6);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -65,7 +67,10 @@ function ContestsDropdown({ onClose }: { onClose?: () => void }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const close = () => { setOpen(false); onClose?.(); };
+  const close = () => {
+    setOpen(false);
+    onClose?.();
+  };
 
   const liveCount = contests.filter((c) => contestStatus(c) === "live").length;
 
@@ -118,11 +123,14 @@ function ContestsDropdown({ onClose }: { onClose?: () => void }) {
                     onClick={close}
                     className="flex items-start gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-accent"
                   >
-                    <div className={`mt-0.5 rounded-md p-1.5 ${status === "live" ? "bg-green/15" : "bg-cyan/15"}`}>
-                      {status === "live"
-                        ? <Radio className="h-3.5 w-3.5 text-green" />
-                        : <Calendar className="h-3.5 w-3.5 text-cyan" />
-                      }
+                    <div
+                      className={`mt-0.5 rounded-md p-1.5 ${status === "live" ? "bg-green/15" : "bg-cyan/15"}`}
+                    >
+                      {status === "live" ? (
+                        <Radio className="h-3.5 w-3.5 text-green" />
+                      ) : (
+                        <Calendar className="h-3.5 w-3.5 text-cyan" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="truncate text-sm font-medium">{c.title}</p>
@@ -200,7 +208,11 @@ function UserDropdown({
             role === "admin" ? "bg-violet/15 text-violet" : "bg-cyan/15 text-cyan"
           }`}
         >
-          {role === "admin" ? <Shield className="h-2.5 w-2.5" /> : <Sparkles className="h-2.5 w-2.5" />}
+          {role === "admin" ? (
+            <Shield className="h-2.5 w-2.5" />
+          ) : (
+            <Sparkles className="h-2.5 w-2.5" />
+          )}
           {role}
         </span>
         <ChevronDown
@@ -251,7 +263,10 @@ function UserDropdown({
           <div className="border-t border-border p-1">
             <button
               role="menuitem"
-              onClick={() => { setOpen(false); onSignOut(); }}
+              onClick={() => {
+                setOpen(false);
+                onSignOut();
+              }}
               className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-destructive transition-colors hover:bg-destructive/10"
             >
               <LogOut className="h-4 w-4" />
@@ -378,7 +393,10 @@ export function Navbar() {
                   </Link>
                 )}
                 <button
-                  onClick={() => { setMobileOpen(false); void signOut(); }}
+                  onClick={() => {
+                    setMobileOpen(false);
+                    void signOut();
+                  }}
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/10"
                 >
                   <LogOut className="h-4 w-4" />

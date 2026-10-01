@@ -273,7 +273,13 @@ export function useAntiCheat({ contestId, enabled, onAutoSubmit }: UseAntiCheatO
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = "Are you sure you want to leave? Your exam progress may be forfeited.";
-      reportViolation("before_unload_attempt", "Page Exit Attempt", "Attempted to close or navigate away from the exam.", {}, true);
+      reportViolation(
+        "before_unload_attempt",
+        "Page Exit Attempt",
+        "Attempted to close or navigate away from the exam.",
+        {},
+        true,
+      );
       return e.returnValue;
     };
 

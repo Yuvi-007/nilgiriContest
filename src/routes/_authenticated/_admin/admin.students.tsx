@@ -1,7 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { KeyRound, LockOpen, Plus, Upload, Search, CheckCircle2, AlertCircle, X } from "lucide-react";
+import {
+  KeyRound,
+  LockOpen,
+  Plus,
+  Upload,
+  Search,
+  CheckCircle2,
+  AlertCircle,
+  X,
+} from "lucide-react";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,10 +75,16 @@ function Students() {
       setCredentials(result);
       setLoginId("");
       setFullName("");
-      setMessage({ text: "Student created. Save the temporary password before closing this window.", type: "success" });
+      setMessage({
+        text: "Student created. Save the temporary password before closing this window.",
+        type: "success",
+      });
       await queryClient.invalidateQueries({ queryKey: ["admin-students"] });
     } catch (error) {
-      setMessage({ text: error instanceof Error ? error.message : "Student could not be created.", type: "error" });
+      setMessage({
+        text: error instanceof Error ? error.message : "Student could not be created.",
+        type: "error",
+      });
     }
   }
 
@@ -98,7 +113,10 @@ function Students() {
       });
       await queryClient.invalidateQueries({ queryKey: ["admin-students"] });
     } catch (error) {
-      setMessage({ text: error instanceof Error ? error.message : "CSV import failed.", type: "error" });
+      setMessage({
+        text: error instanceof Error ? error.message : "CSV import failed.",
+        type: "error",
+      });
     }
   }
 
@@ -106,10 +124,16 @@ function Students() {
     try {
       const result = await resetPassword({ data: { accessToken: await accessToken(), userId } });
       setCredentials([result]);
-      setMessage({ text: "Password reset. Save the temporary password before closing this window.", type: "success" });
+      setMessage({
+        text: "Password reset. Save the temporary password before closing this window.",
+        type: "success",
+      });
       await queryClient.invalidateQueries({ queryKey: ["admin-students"] });
     } catch (error) {
-      setMessage({ text: error instanceof Error ? error.message : "Password reset failed.", type: "error" });
+      setMessage({
+        text: error instanceof Error ? error.message : "Password reset failed.",
+        type: "error",
+      });
     }
   }
 
@@ -118,13 +142,19 @@ function Students() {
       await unlock({ data: { accessToken: await accessToken(), loginId: loginIdToUnlock } });
       setMessage({ text: `${loginIdToUnlock} unlocked.`, type: "success" });
     } catch (error) {
-      setMessage({ text: error instanceof Error ? error.message : "Unlock failed.", type: "error" });
+      setMessage({
+        text: error instanceof Error ? error.message : "Unlock failed.",
+        type: "error",
+      });
     }
   }
 
   return (
     <>
-      <PageHeader title="Students" subtitle={`${data.length} student${data.length !== 1 ? "s" : ""} registered`}>
+      <PageHeader
+        title="Students"
+        subtitle={`${data.length} student${data.length !== 1 ? "s" : ""} registered`}
+      >
         <Button
           onClick={() => {
             setMessage(null);
@@ -236,7 +266,10 @@ function Students() {
               </tr>
             )}
             {filtered.map((p) => (
-              <tr key={p.id} className="border-b border-border/50 last:border-0 transition-colors hover:bg-accent/30">
+              <tr
+                key={p.id}
+                className="border-b border-border/50 last:border-0 transition-colors hover:bg-accent/30"
+              >
                 <td className="p-3 font-mono text-cyan">{p.login_id}</td>
                 <td className="p-3">{p.full_name}</td>
                 <td className="p-3">

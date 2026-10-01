@@ -90,10 +90,7 @@ function AdminHome() {
 
   return (
     <>
-      <PageHeader
-        title="Admin overview"
-        subtitle="Monitor your cohort at a glance."
-      />
+      <PageHeader title="Admin overview" subtitle="Monitor your cohort at a glance." />
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

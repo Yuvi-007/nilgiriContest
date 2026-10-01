@@ -1,6 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle2, CircleAlert, Maximize2, Shield, ShieldAlert, Lock, Check } from "lucide-react";
+import {
+  CheckCircle2,
+  CircleAlert,
+  Maximize2,
+  Shield,
+  ShieldAlert,
+  Lock,
+  Check,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Page, GlassCard, StatusPill } from "@/components/ui-kit";
@@ -126,7 +134,8 @@ function Lobby() {
             </div>
             <h2 className="mt-4 text-2xl font-bold text-foreground">Exam Attempt Completed</h2>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              You have already completed and submitted your examination for this contest. In accordance with examination regulations, only one attempt is permitted per student.
+              You have already completed and submitted your examination for this contest. In
+              accordance with examination regulations, only one attempt is permitted per student.
             </p>
 
             <div className="mt-5 rounded-xl border border-border/70 bg-bg3/60 p-4 text-left font-mono text-xs space-y-1.5 text-muted-foreground">
@@ -159,7 +168,8 @@ function Lobby() {
             ) : (
               <div className="mt-5 rounded-xl border border-border/50 bg-bg2/80 p-3.5 text-xs text-muted-foreground">
                 <Lock className="inline h-3.5 w-3.5 mr-1 text-gold" />
-                Contest is currently active. Official rankings and solutions will be unlocked after the contest window closes at{" "}
+                Contest is currently active. Official rankings and solutions will be unlocked after
+                the contest window closes at{" "}
                 <span className="font-semibold text-foreground">{formatIST(c.end_time)}</span>.
               </div>
             )}
@@ -173,11 +183,27 @@ function Lobby() {
                 <h2 className="font-bold text-base">Examination Security Rules</h2>
               </div>
               <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
-                <li><strong className="text-foreground">Single attempt:</strong> Once entered and submitted, you cannot retake this contest.</li>
-                <li><strong className="text-foreground">Zero-tolerance window blur:</strong> Switching tabs, clicking background windows, or accessing secondary monitors counts as a security strike.</li>
-                <li><strong className="text-foreground">3 Strikes rule:</strong> Reaching 3 strikes triggers automatic submission and disqualification.</li>
-                <li><strong className="text-foreground">Clipboard lockdown:</strong> Copying questions, pasting external text, and right-clicking are strictly disabled.</li>
-                <li><strong className="text-foreground">Timer continuity:</strong> The timer begins the moment you enter and cannot be paused.</li>
+                <li>
+                  <strong className="text-foreground">Single attempt:</strong> Once entered and
+                  submitted, you cannot retake this contest.
+                </li>
+                <li>
+                  <strong className="text-foreground">Zero-tolerance window blur:</strong> Switching
+                  tabs, clicking background windows, or accessing secondary monitors counts as a
+                  security strike.
+                </li>
+                <li>
+                  <strong className="text-foreground">3 Strikes rule:</strong> Reaching 3 strikes
+                  triggers automatic submission and disqualification.
+                </li>
+                <li>
+                  <strong className="text-foreground">Clipboard lockdown:</strong> Copying
+                  questions, pasting external text, and right-clicking are strictly disabled.
+                </li>
+                <li>
+                  <strong className="text-foreground">Timer continuity:</strong> The timer begins
+                  the moment you enter and cannot be paused.
+                </li>
               </ul>
 
               <div className="mt-6 space-y-2.5 border-t border-border pt-4 text-sm">
@@ -215,7 +241,8 @@ function Lobby() {
                     className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary"
                   />
                   <span className="text-xs text-muted-foreground leading-relaxed">
-                    I understand that proctoring is enabled, questions cannot be copied, and any tab switch or window blur will be recorded as a violation toward the 3-strike limit.
+                    I understand that proctoring is enabled, questions cannot be copied, and any tab
+                    switch or window blur will be recorded as a violation toward the 3-strike limit.
                   </span>
                 </label>
               </div>

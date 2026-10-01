@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Code2, Maximize, Play, Send, Shield, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,9 +26,11 @@ function Arena() {
   // Queries
   const { data: c } = useQuery(contestQuery(id));
   const { data: attemptStatus, isLoading: statusLoading } = useQuery(studentAttemptStatusQuery(id));
-  const { data: questionRows = [], isLoading: questionsLoading, error: questionsError } = useQuery(
-    contestQuestionsQuery(id),
-  );
+  const {
+    data: questionRows = [],
+    isLoading: questionsLoading,
+    error: questionsError,
+  } = useQuery(contestQuestionsQuery(id));
 
   const runCode = useServerFn(runCodingTests);
   const [startedAt, setStartedAt] = useState(() => Date.now());
@@ -76,24 +78,7 @@ function Arena() {
     }
   }, [attemptStatus, id]);
 
-  const submitAttempt = useCallback(async () => {
-    if (submitting || submitted) return;
-    setSubmitting(true);
-    setSubmissionError(null);
-    const { error } = await supabase.rpc("submit_contest_attempt", {
-      _contest_id: id,
-      _answers: answers,
-      _violations: antiCheatRef.current.violations,
-    });
-    if (error) {
-      setSubmissionError("Your attempt could not be submitted. Please try again.");
-      setSubmitting(false);
-      return;
-    }
-    setSubmitted(true);
-    localStorage.removeItem(`nilgiri-attempt-${id}`);
-    localStorage.setItem(`nilgiri-attempt-${id}-submitted`, String(Date.now()));
-  }, [answers, id, submitted, submitting]);
+  const antiCheatRef = useRef<ReturnType<typeof useAntiCheat> | null>(null);
 
   // Hardened Anti-Cheat proctoring hook with 3-strikes auto-submit
   const antiCheat = useAntiCheat({
@@ -104,7 +89,26 @@ function Arena() {
     },
   });
 
-  const antiCheatRef = { current: antiCheat };
+  antiCheatRef.current = antiCheat;
+
+  const submitAttempt = useCallback(async () => {
+    if (submitting || submitted) return;
+    setSubmitting(true);
+    setSubmissionError(null);
+    const { error } = await supabase.rpc("submit_contest_attempt", {
+      _contest_id: id,
+      _answers: answers,
+      _violations: antiCheatRef.current?.violations ?? 0,
+    });
+    if (error) {
+      setSubmissionError("Your attempt could not be submitted. Please try again.");
+      setSubmitting(false);
+      return;
+    }
+    setSubmitted(true);
+    localStorage.removeItem(`nilgiri-attempt-${id}`);
+    localStorage.setItem(`nilgiri-attempt-${id}-submitted`, String(Date.now()));
+  }, [answers, id, submitted, submitting]);
 
   useEffect(() => {
     let active = true;
@@ -239,7 +243,8 @@ function Arena() {
           </div>
           <h1 className="mt-4 text-2xl font-extrabold text-foreground">Contest Submitted</h1>
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-            Your attempt was securely recorded and finalized. Each student may only sit this examination once.
+            Your attempt was securely recorded and finalized. Each student may only sit this
+            examination once.
           </p>
           <div className="mt-4 rounded-xl border border-border/60 bg-bg3/60 p-3 font-mono text-xs text-muted-foreground">
             Status: Finalized · No further attempts allowed
@@ -352,7 +357,11 @@ function Arena() {
             className="mt-4 w-full gap-1.5 font-bold"
             disabled={submitting}
             onClick={() => {
-              if (window.confirm("Are you sure you want to finish and submit your contest? This cannot be undone.")) {
+              if (
+                window.confirm(
+                  "Are you sure you want to finish and submit your contest? This cannot be undone.",
+                )
+              ) {
                 void submitAttempt();
               }
             }}
@@ -399,7 +408,9 @@ function Arena() {
                 <div className="mt-5 overflow-hidden rounded-xl border border-border/80 bg-bg3/60 p-3 select-none">
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-2 px-1">
                     <span className="font-mono">Reference Diagram / Problem Attachment</span>
-                    <span className="text-[10px] uppercase tracking-wider text-cyan/70 font-semibold">Protected Asset</span>
+                    <span className="text-[10px] uppercase tracking-wider text-cyan/70 font-semibold">
+                      Protected Asset
+                    </span>
                   </div>
                   <div className="flex justify-center bg-black/40 rounded-lg p-2 border border-border/40">
                     <img
@@ -471,7 +482,8 @@ function Arena() {
                           codeRun.passedTests === codeRun.totalTests ? "text-green" : "text-gold"
                         }`}
                       >
-                        {codeRun.passedTests}/{codeRun.totalTests} tests passed ({codeRun.score.toFixed(1)} marks)
+                        {codeRun.passedTests}/{codeRun.totalTests} tests passed (
+                        {codeRun.score.toFixed(1)} marks)
                       </span>
                     )}
                   </div>

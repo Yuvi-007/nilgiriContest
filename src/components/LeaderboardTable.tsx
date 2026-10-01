@@ -5,7 +5,15 @@ import { cn } from "@/lib/utils";
 import { Trophy, Clock, Hash, Medal } from "lucide-react";
 
 /* ── Animated count-up number ── */
-function CountUp({ value, duration = 900, decimals = 0 }: { value: number; duration?: number; decimals?: number }) {
+function CountUp({
+  value,
+  duration = 900,
+  decimals = 0,
+}: {
+  value: number;
+  duration?: number;
+  decimals?: number;
+}) {
   const [display, setDisplay] = useState(0);
   const raf = useRef<number>(0);
 
@@ -27,18 +35,38 @@ function CountUp({ value, duration = 900, decimals = 0 }: { value: number; durat
 }
 
 /* ── Avatar circle ── */
-function Avatar({ name, rank, size = "md" }: { name: string; rank: number; size?: "sm" | "md" | "lg" }) {
-  const initials = name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+function Avatar({
+  name,
+  rank,
+  size = "md",
+}: {
+  name: string;
+  rank: number;
+  size?: "sm" | "md" | "lg";
+}) {
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
   const colors = [
-    "from-gold to-orange",      // #1
-    "from-cyan to-violet",      // #2
+    "from-gold to-orange", // #1
+    "from-cyan to-violet", // #2
     "from-orange to-destructive", // #3
-    "from-violet to-primary",   // rest
+    "from-violet to-primary", // rest
   ];
   const color = colors[Math.min(rank - 1, colors.length - 1)];
-  const sz = size === "lg" ? "h-16 w-16 text-2xl" : size === "md" ? "h-12 w-12 text-lg" : "h-8 w-8 text-xs";
+  const sz =
+    size === "lg" ? "h-16 w-16 text-2xl" : size === "md" ? "h-12 w-12 text-lg" : "h-8 w-8 text-xs";
   return (
-    <div className={cn("shrink-0 rounded-full bg-gradient-to-br flex items-center justify-center font-bold text-white shadow-lg", sz, color)}>
+    <div
+      className={cn(
+        "shrink-0 rounded-full bg-gradient-to-br flex items-center justify-center font-bold text-white shadow-lg",
+        sz,
+        color,
+      )}
+    >
       {initials}
     </div>
   );
@@ -49,12 +77,14 @@ const MEDALS = ["🥇", "🥈", "🥉"];
 function RankBadge({ rank }: { rank: number }) {
   if (rank <= 3) {
     return (
-      <span className={cn(
-        "inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold",
-        rank === 1 && "bg-gold/20 text-gold ring-1 ring-gold/40",
-        rank === 2 && "bg-cyan/20 text-cyan ring-1 ring-cyan/40",
-        rank === 3 && "bg-orange/20 text-orange ring-1 ring-orange/40",
-      )}>
+      <span
+        className={cn(
+          "inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold",
+          rank === 1 && "bg-gold/20 text-gold ring-1 ring-gold/40",
+          rank === 2 && "bg-cyan/20 text-cyan ring-1 ring-cyan/40",
+          rank === 3 && "bg-orange/20 text-orange ring-1 ring-orange/40",
+        )}
+      >
         {MEDALS[rank - 1]}
       </span>
     );
@@ -79,19 +109,61 @@ function ScoreBar({ score, max, color }: { score: number; max: number; color: st
 }
 
 /* ── Podium card (top 3) ── */
-function PodiumCard({ row, rank, highlight }: { row: LeaderRow; rank: number; highlight?: string | undefined }) {
+function PodiumCard({
+  row,
+  rank,
+  highlight,
+}: {
+  row: LeaderRow;
+  rank: number;
+  highlight?: string | undefined;
+}) {
   const isMe = row.userId === highlight;
   const maxScore = 20 * row.contests;
   const pct = maxScore > 0 ? Math.round((row.score / maxScore) * 100) : 0;
 
   const config = {
-    1: { medal: "🥇", color: "text-gold", border: "border-gold/30", bg: "bg-gold/5", glow: "shadow-[0_0_30px_rgba(245,158,11,0.15)]", height: "pb-10", order: "order-2" },
-    2: { medal: "🥈", color: "text-cyan", border: "border-cyan/30", bg: "bg-cyan/5", glow: "shadow-[0_0_20px_rgba(34,201,245,0.1)]", height: "pb-0 mt-8", order: "order-1" },
-    3: { medal: "🥉", color: "text-orange", border: "border-orange/30", bg: "bg-orange/5", glow: "shadow-[0_0_20px_rgba(249,115,22,0.1)]", height: "pb-0 mt-8", order: "order-3" },
+    1: {
+      medal: "🥇",
+      color: "text-gold",
+      border: "border-gold/30",
+      bg: "bg-gold/5",
+      glow: "shadow-[0_0_30px_rgba(245,158,11,0.15)]",
+      height: "pb-10",
+      order: "order-2",
+    },
+    2: {
+      medal: "🥈",
+      color: "text-cyan",
+      border: "border-cyan/30",
+      bg: "bg-cyan/5",
+      glow: "shadow-[0_0_20px_rgba(34,201,245,0.1)]",
+      height: "pb-0 mt-8",
+      order: "order-1",
+    },
+    3: {
+      medal: "🥉",
+      color: "text-orange",
+      border: "border-orange/30",
+      bg: "bg-orange/5",
+      glow: "shadow-[0_0_20px_rgba(249,115,22,0.1)]",
+      height: "pb-0 mt-8",
+      order: "order-3",
+    },
   }[rank]!;
 
   return (
-    <div className={cn("flex flex-col items-center gap-3 rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1", config.border, config.bg, config.glow, config.height, config.order, isMe && "ring-2 ring-primary")}>
+    <div
+      className={cn(
+        "flex flex-col items-center gap-3 rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1",
+        config.border,
+        config.bg,
+        config.glow,
+        config.height,
+        config.order,
+        isMe && "ring-2 ring-primary",
+      )}
+    >
       <div className="text-2xl">{config.medal}</div>
       <Avatar name={row.name} rank={rank} size="lg" />
       <div className="text-center">
@@ -111,12 +183,14 @@ function PodiumCard({ row, rank, highlight }: { row: LeaderRow; rank: number; hi
           {mmss(row.time)}
         </span>
       </div>
-      <div className={cn(
-        "mt-1 w-full rounded-xl py-2 text-center font-mono text-xl font-black",
-        rank === 1 && "bg-gold/15 text-gold",
-        rank === 2 && "bg-cyan/15 text-cyan",
-        rank === 3 && "bg-orange/15 text-orange",
-      )}>
+      <div
+        className={cn(
+          "mt-1 w-full rounded-xl py-2 text-center font-mono text-xl font-black",
+          rank === 1 && "bg-gold/15 text-gold",
+          rank === 2 && "bg-cyan/15 text-cyan",
+          rank === 3 && "bg-orange/15 text-orange",
+        )}
+      >
         #{rank}
       </div>
     </div>
@@ -124,15 +198,22 @@ function PodiumCard({ row, rank, highlight }: { row: LeaderRow; rank: number; hi
 }
 
 /* ── Main table row ── */
-function TableRow({ row, rank, highlight, animDelay }: { row: LeaderRow; rank: number; highlight?: string | undefined; animDelay: number }) {
+function TableRow({
+  row,
+  rank,
+  highlight,
+  animDelay,
+}: {
+  row: LeaderRow;
+  rank: number;
+  highlight?: string | undefined;
+  animDelay: number;
+}) {
   const isMe = row.userId === highlight;
   const maxScore = 20 * row.contests;
   const pct = maxScore > 0 ? Math.round((row.score / maxScore) * 100) : 0;
   const barColor =
-    rank === 1 ? "bg-gold" :
-    rank === 2 ? "bg-cyan" :
-    rank === 3 ? "bg-orange" :
-    "bg-primary";
+    rank === 1 ? "bg-gold" : rank === 2 ? "bg-cyan" : rank === 3 ? "bg-orange" : "bg-primary";
 
   return (
     <tr
@@ -152,7 +233,9 @@ function TableRow({ row, rank, highlight, animDelay }: { row: LeaderRow; rank: n
             <div className="flex items-center gap-2">
               <span className="font-semibold">{row.name}</span>
               {isMe && (
-                <span className="rounded-full bg-primary/20 px-1.5 py-0.5 font-mono text-[10px] text-primary">you</span>
+                <span className="rounded-full bg-primary/20 px-1.5 py-0.5 font-mono text-[10px] text-primary">
+                  you
+                </span>
               )}
             </div>
             <div className="font-mono text-xs text-muted-foreground">{row.loginId}</div>
@@ -175,10 +258,18 @@ function TableRow({ row, rank, highlight, animDelay }: { row: LeaderRow; rank: n
         <span className="font-mono text-xs text-muted-foreground">{row.contests}</span>
       </td>
       <td className="p-3 text-right">
-        <span className={cn(
-          "font-mono text-sm font-bold",
-          pct >= 80 ? "text-green" : pct >= 60 ? "text-cyan" : pct >= 40 ? "text-gold" : "text-muted-foreground",
-        )}>
+        <span
+          className={cn(
+            "font-mono text-sm font-bold",
+            pct >= 80
+              ? "text-green"
+              : pct >= 60
+                ? "text-cyan"
+                : pct >= 40
+                  ? "text-gold"
+                  : "text-muted-foreground",
+          )}
+        >
           {pct}%
         </span>
       </td>
@@ -217,10 +308,18 @@ export function LeaderboardTable({ rows, highlight }: { rows: LeaderRow[]; highl
         <table className="w-full text-sm">
           <thead className="text-left text-xs uppercase text-muted-foreground">
             <tr className="border-b border-border">
-              <th className="p-3 pl-4"><Hash className="inline h-3 w-3" /></th>
+              <th className="p-3 pl-4">
+                <Hash className="inline h-3 w-3" />
+              </th>
               <th className="p-3">Student</th>
-              <th className="p-3"><Trophy className="inline h-3 w-3 mr-1" />Score</th>
-              <th className="hidden p-3 text-right md:table-cell"><Clock className="inline h-3 w-3 mr-1" />Time</th>
+              <th className="p-3">
+                <Trophy className="inline h-3 w-3 mr-1" />
+                Score
+              </th>
+              <th className="hidden p-3 text-right md:table-cell">
+                <Clock className="inline h-3 w-3 mr-1" />
+                Time
+              </th>
               <th className="hidden p-3 text-center lg:table-cell">Contests</th>
               <th className="p-3 text-right">%</th>
             </tr>

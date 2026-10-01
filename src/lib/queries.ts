@@ -152,7 +152,8 @@ export const dashboardHistoryQuery = (userId: string) =>
   });
 
 export type StudentAttemptStatus = {
-  status: "not_started" | "in_progress" | "submitted" | "terminated" | "not_found" | "unauthenticated";
+  status:
+    "not_started" | "in_progress" | "submitted" | "terminated" | "not_found" | "unauthenticated";
   attempt_id?: string;
   started_at?: string;
   submitted_at?: string;

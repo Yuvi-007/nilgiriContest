@@ -1,12 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
-import {
-  LayoutDashboard,
-  Users,
-  BookOpen,
-  Trophy,
-  ScrollText,
-  ChevronRight,
-} from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, Trophy, ScrollText, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/_admin")({
   beforeLoad: ({ context }) => {

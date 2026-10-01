@@ -33,7 +33,11 @@ function Leaderboard() {
             <h1 className="flex items-center gap-2 text-3xl font-extrabold tracking-tight">
               <Trophy className="h-8 w-8 text-gold" />
               Leaderboard
-              {contestId && <span className="rounded-full bg-primary/15 px-2 py-0.5 text-sm font-medium text-primary">· Live</span>}
+              {contestId && (
+                <span className="rounded-full bg-primary/15 px-2 py-0.5 text-sm font-medium text-primary">
+                  · Live
+                </span>
+              )}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {rows.length > 0 ? (
