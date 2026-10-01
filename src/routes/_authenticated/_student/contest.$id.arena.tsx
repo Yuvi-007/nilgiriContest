@@ -33,6 +33,7 @@ function Arena() {
   const runCode = useServerFn(runCodingTests);
   const [startedAt, setStartedAt] = useState(() => Date.now());
   const [attemptId, setAttemptId] = useState<string | null>(null);
+  const [assignedSet, setAssignedSet] = useState<string | null>(null);
   const now = useNow() ?? startedAt;
   const [deadline, setDeadline] = useState<number | null>(null);
   const [current, setCurrent] = useState(0);
@@ -61,6 +62,7 @@ function Arena() {
 
   const questions = useMemo(() => questionRows.map((row) => row.question), [questionRows]);
   const question = questions[current];
+  const activeSet = assignedSet || questions[0]?.set_code || "A";
   const options = Array.isArray(question?.options)
     ? question.options.filter((option): option is string => typeof option === "string")
     : [];
@@ -118,11 +120,13 @@ function Arena() {
       } else if (data && typeof data === "object" && !Array.isArray(data)) {
         const payload = data as {
           attemptId?: string;
+          assignedSet?: string;
           startedAt?: string;
           deadline?: string;
           answers?: unknown;
         };
         if (payload.attemptId) setAttemptId(payload.attemptId);
+        if (payload.assignedSet) setAssignedSet(payload.assignedSet);
         if (payload.startedAt) setStartedAt(new Date(payload.startedAt).getTime());
         if (payload.deadline) setDeadline(new Date(payload.deadline).getTime());
         if (
@@ -272,8 +276,11 @@ function Arena() {
         </span>
         <span className="hidden truncate text-muted-foreground sm:inline">{c?.title ?? "…"}</span>
 
-        {/* Security badge */}
+        {/* Security badge and assigned set */}
         <div className="flex items-center gap-1.5 ml-2">
+          <span className="flex items-center gap-1 rounded-full border border-cyan/40 bg-cyan/15 px-2.5 py-0.5 font-mono text-xs font-bold text-cyan">
+            Set {activeSet}
+          </span>
           {antiCheat.strikes > 0 ? (
             <span className="flex items-center gap-1 rounded-full border border-destructive/40 bg-destructive/15 px-2.5 py-0.5 font-mono text-xs font-bold text-destructive animate-pulse">
               <ShieldAlert className="h-3 w-3" />
@@ -371,15 +378,40 @@ function Arena() {
             <>
               <div className="flex items-center justify-between border-b border-border pb-4">
                 <div>
-                  <p className="font-mono text-xs uppercase tracking-wider text-cyan font-bold">
-                    Question {current + 1} of {questions.length} · {question.type.toUpperCase()}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded bg-cyan/15 px-2 py-0.5 font-mono text-xs font-extrabold text-cyan">
+                      SET {activeSet}
+                    </span>
+                    <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground font-bold">
+                      Question {current + 1} of {questions.length} · {question.type.toUpperCase()}
+                      {question.difficulty && ` · ${question.difficulty.toUpperCase()}`}
+                    </p>
+                  </div>
                   <h1 className="mt-2 text-2xl font-extrabold select-none">{question.title}</h1>
                 </div>
                 <span className="rounded-full bg-gold/15 px-3 py-1 font-mono text-xs font-bold text-gold">
                   {question.marks} mark{question.marks === 1 ? "" : "s"}
                 </span>
               </div>
+
+              {/* Question Image if present */}
+              {question.image_url && (
+                <div className="mt-5 overflow-hidden rounded-xl border border-border/80 bg-bg3/60 p-3 select-none">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-2 px-1">
+                    <span className="font-mono">Reference Diagram / Problem Attachment</span>
+                    <span className="text-[10px] uppercase tracking-wider text-cyan/70 font-semibold">Protected Asset</span>
+                  </div>
+                  <div className="flex justify-center bg-black/40 rounded-lg p-2 border border-border/40">
+                    <img
+                      src={question.image_url}
+                      alt={question.title}
+                      className="max-h-80 w-auto max-w-full rounded-md object-contain select-none pointer-events-none"
+                      onContextMenu={(e) => e.preventDefault()}
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Unselectable question body */}
               <p className="mt-6 whitespace-pre-wrap leading-relaxed text-foreground/90 select-none">

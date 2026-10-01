@@ -59,6 +59,15 @@ function Review() {
                   {question.marks} mark{question.marks === 1 ? "" : "s"}
                 </span>
               </div>
+              {question.image_url && (
+                <div className="mt-3 overflow-hidden rounded-lg border border-border/70 bg-bg3/40 p-2 max-w-md">
+                  <img
+                    src={question.image_url}
+                    alt={question.title}
+                    className="max-h-48 w-auto rounded object-contain"
+                  />
+                </div>
+              )}
               <p className="mt-4 whitespace-pre-wrap text-sm text-muted-foreground">
                 {answers[question.id]
                   ? question.type === "mcq" && Array.isArray(question.options)

@@ -88,6 +88,7 @@ function Monitor() {
             <thead className="text-left text-xs uppercase text-muted-foreground">
               <tr className="border-b border-border">
                 <th className="p-3">Student</th>
+                <th className="p-3">Set</th>
                 <th className="p-3">Status</th>
                 <th className="p-3">Last seen</th>
                 <th className="p-3">Started</th>
@@ -109,6 +110,15 @@ function Monitor() {
                       <span className="font-mono text-xs text-muted-foreground">
                         {row.login_id}
                       </span>
+                    </td>
+                    <td className="p-3">
+                      {row.assigned_set && row.assigned_set !== "—" ? (
+                        <span className="inline-flex items-center rounded-md border border-cyan/40 bg-cyan/15 px-2 py-0.5 font-mono text-xs font-bold text-cyan">
+                          Set {row.assigned_set}
+                        </span>
+                      ) : (
+                        <span className="font-mono text-xs text-muted-foreground">—</span>
+                      )}
                     </td>
                     <td className="p-3">
                       <span
