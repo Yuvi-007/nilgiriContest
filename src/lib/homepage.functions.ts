@@ -40,32 +40,35 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function parseSnapshot(value: unknown): HomepageSnapshot {
   if (!isRecord(value)) return emptySnapshot;
-  const activeContest = isRecord(value.activeContest)
-    ? { id: String(value.activeContest.id ?? ""), title: String(value.activeContest.title ?? "") }
+  const activeContestValue = value["activeContest"];
+  const activeContest = isRecord(activeContestValue)
+    ? { id: String(activeContestValue["id"] ?? ""), title: String(activeContestValue["title"] ?? "") }
     : null;
-  const latest = isRecord(value.latestContest) ? value.latestContest : null;
-  const leaders = latest && Array.isArray(latest.leaders)
-    ? latest.leaders.filter(isRecord).map((leader) => ({
-        rank: Number(leader.rank ?? 0),
-        name: String(leader.name ?? "Student"),
-        score: Number(leader.score ?? 0),
-        timeTakenSeconds: Number(leader.timeTakenSeconds ?? 0),
-        submittedAt: String(leader.submittedAt ?? ""),
+  const latestValue = value["latestContest"];
+  const latest = isRecord(latestValue) ? latestValue : null;
+  const leadersValue = latest?.["leaders"];
+  const leaders = Array.isArray(leadersValue)
+    ? leadersValue.filter(isRecord).map((leader) => ({
+        rank: Number(leader["rank"] ?? 0),
+        name: String(leader["name"] ?? "Student"),
+        score: Number(leader["score"] ?? 0),
+        timeTakenSeconds: Number(leader["timeTakenSeconds"] ?? 0),
+        submittedAt: String(leader["submittedAt"] ?? ""),
       }))
     : [];
 
   return {
-    activeStudents: Number(value.activeStudents ?? 0),
-    contestsHeld: Number(value.contestsHeld ?? 0),
-    totalSubmissions: Number(value.totalSubmissions ?? 0),
-    averageScore: value.averageScore === null || value.averageScore === undefined ? null : Number(value.averageScore),
+    activeStudents: Number(value["activeStudents"] ?? 0),
+    contestsHeld: Number(value["contestsHeld"] ?? 0),
+    totalSubmissions: Number(value["totalSubmissions"] ?? 0),
+    averageScore: value["averageScore"] === null || value["averageScore"] === undefined ? null : Number(value["averageScore"]),
     activeContest,
     latestContest: latest
       ? {
-          id: String(latest.id ?? ""),
-          title: String(latest.title ?? ""),
-          startTime: String(latest.startTime ?? ""),
-          endTime: String(latest.endTime ?? ""),
+          id: String(latest["id"] ?? ""),
+          title: String(latest["title"] ?? ""),
+          startTime: String(latest["startTime"] ?? ""),
+          endTime: String(latest["endTime"] ?? ""),
           leaders,
         }
       : null,
