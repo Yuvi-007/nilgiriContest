@@ -1,5 +1,12 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { getHomepageSnapshot } from "@/lib/homepage.functions";
+
+export const homepageQuery = queryOptions({
+  queryKey: ["homepage-snapshot"],
+  queryFn: () => getHomepageSnapshot(),
+  staleTime: 60_000,
+});
 
 export const contestsQuery = queryOptions({
   queryKey: ["contests"],

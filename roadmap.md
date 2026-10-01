@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Build the interactive homepage hero and session-aware actions
-- [ ] Add safe public homepage aggregates and latest leaderboard preview
-- [ ] Add animated real-data stats with empty states
-- [ ] Add the reduced-motion marquee and feature grid
-- [ ] Add the closing action and runtime footer
-- [ ] Verify desktop, mobile, reduced-motion, data, navigation, and diagnostics
+- [x] Build the interactive homepage hero and session-aware actions
+- [x] Add safe public homepage aggregates and latest leaderboard preview
+- [x] Add animated real-data stats with empty states
+- [x] Add the reduced-motion marquee and feature grid
+- [x] Add the closing action and runtime footer
+- [x] Verify desktop, mobile, reduced-motion, data, navigation, and diagnostics
