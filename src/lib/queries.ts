@@ -166,10 +166,7 @@ export const studentAttemptStatusQuery = (contestId: string) =>
   queryOptions({
     queryKey: ["student-attempt-status", contestId],
     queryFn: async (): Promise<StudentAttemptStatus> => {
-      const { data, error } = await (supabase.rpc as unknown as (
-        fn: string,
-        args?: Record<string, unknown>,
-      ) => Promise<{ data: unknown; error: unknown }>)("get_student_attempt_status", {
+      const { data, error } = await supabase.rpc("get_student_attempt_status", {
         _contest_id: contestId,
       });
       if (error) {

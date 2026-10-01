@@ -222,9 +222,8 @@ function AdminContests() {
       return;
     }
     void (async () => {
-      const rpc = supabase.rpc as unknown as (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-      const { data } = await rpc("admin_get_contest_questions", { _contest_id: selectedContestId });
-      const rows = (data as Array<{ set_code: string; question_id: string; position: number }> | null) ?? [];
+      const { data } = await supabase.rpc("admin_get_contest_questions", { _contest_id: selectedContestId });
+      const rows = data ?? [];
       const result: Record<SetCode, string[]> = { A: [], B: [], C: [] };
       for (const sc of ["A", "B", "C"] as SetCode[]) {
         result[sc] = rows
@@ -277,14 +276,13 @@ function AdminContests() {
   async function saveSet(set: SetCode) {
     if (!selectedContestId) return;
     setMessage(null);
-    const rpc = supabase.rpc as unknown as (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-    const { error } = await rpc("admin_set_contest_questions", {
+    const { error } = await supabase.rpc("admin_set_contest_questions", {
       _contest_id: selectedContestId,
       _question_ids: setQuestions[set],
       _set_code: set,
     });
     setMessage(error
-      ? { type: "err", text: (error as { message?: string }).message ?? String(error) }
+      ? { type: "err", text: error.message }
       : { type: "ok", text: `Set ${set} saved (${setQuestions[set].length} questions).` }
     );
   }
@@ -293,13 +291,12 @@ function AdminContests() {
     if (!selectedContestId) return;
     setAutoGenLoading(true);
     setMessage(null);
-    const rpc = supabase.rpc as unknown as (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-    const { data, error } = await rpc("admin_auto_generate_sets", { _contest_id: selectedContestId });
+    const { data, error } = await supabase.rpc("admin_auto_generate_sets", { _contest_id: selectedContestId });
     setAutoGenLoading(false);
-    if (error) return setMessage({ type: "err", text: (error as { message?: string }).message ?? String(error) });
-    setMessage({ type: "ok", text: (data as { message?: string })?.message ?? "Sets B & C generated!" });
-    const { data: rows2 } = await rpc("admin_get_contest_questions", { _contest_id: selectedContestId });
-    const rows = (rows2 as Array<{ set_code: string; question_id: string; position: number }> | null) ?? [];
+    if (error) return setMessage({ type: "err", text: error.message });
+    setMessage({ type: "ok", text: (data as { message?: string } | null)?.message ?? "Sets B & C generated!" });
+    const { data: rows2 } = await supabase.rpc("admin_get_contest_questions", { _contest_id: selectedContestId });
+    const rows = rows2 ?? [];
     const result: Record<SetCode, string[]> = { A: [], B: [], C: [] };
     for (const sc of ["A", "B", "C"] as SetCode[]) {
       result[sc] = rows.filter((r) => r.set_code === sc).sort((a, b) => a.position - b.position).map((r) => r.question_id);

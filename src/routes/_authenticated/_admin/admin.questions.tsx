@@ -161,24 +161,39 @@ function Questions() {
               .filter(Boolean)
           : null;
 
-      const { error } = await (supabase.rpc as unknown as (
-        fn: string,
-        args?: Record<string, unknown>,
-      ) => Promise<{ data: unknown; error: unknown }>)("admin_upsert_question", {
-        _id: draft.id,
+      const payload: {
+        _id?: string;
+        _type?: "mcq" | "coding";
+        _title?: string;
+        _body?: string;
+        _options?: string[];
+        _correct_option?: number;
+        _difficulty?: "easy" | "medium" | "hard";
+        _code_language?: string;
+        _test_cases?: Array<{ input: string; expected_output: string; is_hidden?: boolean }>;
+        _image_url?: string;
+      } = {
         _type: draft.type,
         _title: draft.title,
         _body: draft.body,
-        _options: options,
-        _correct_option: draft.type === "mcq" ? Number(draft.correctOption) : null,
-        _difficulty: draft.type === "coding" ? draft.difficulty : null,
         _code_language: draft.codeLanguage,
         _test_cases: testCases,
-        _image_url: draft.imageUrl,
-      });
+      };
+
+      if (draft.id) payload._id = draft.id;
+      if (options && options.length > 0) payload._options = options;
+      if (draft.type === "mcq" && draft.correctOption !== null && draft.correctOption !== "") {
+        payload._correct_option = Number(draft.correctOption);
+      }
+      if (draft.type === "coding" && draft.difficulty) {
+        payload._difficulty = draft.difficulty;
+      }
+      if (draft.imageUrl) payload._image_url = draft.imageUrl;
+
+      const { error } = await supabase.rpc("admin_upsert_question", payload);
 
       if (error) {
-        throw new Error(typeof error === "object" && error && "message" in error ? String(error.message) : "Failed to save question.");
+        throw new Error(error.message);
       }
 
       await queryClient.invalidateQueries({ queryKey: ["admin-questions"] });
