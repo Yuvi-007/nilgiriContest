@@ -5,7 +5,9 @@ Build a complete, production-quality web application called nilgiriContest: a se
 Work strictly in phases. Start with Phase 1: Foundation.
 
 Phase 1 requirements:
+
 1. Design tokens & theme:
+
 - Dark, glassy, blue-accent design system:
   - bg #0a0606, bg2 #110808, bg3 #180d0d
   - card rgba(255,255,255,.04), border rgba(255,255,255,.08)
@@ -15,22 +17,26 @@ Phase 1 requirements:
 - Support "calm mode" for Arena and Lobby (solid dark card backgrounds, no blur, aurora, or distracting animations).
 
 2. Navigation & Layout:
+
 - Fixed blurred dark navbar with bottom border: logo "nilgiriContest", Features, Rules, Leaderboard links, "next contest in hh:mm:ss" countdown chip, and role-aware auth controls.
 - Navbar hides in the arena, replaced by a slim contest status bar.
 
 3. Authentication & Roles:
+
 - Exactly 1 admin and up to 90 student accounts. Closed cohort: NO public signup and NO self-service forgot-password email flow.
 - Login screen: Student/Admin ID + password, show/hide password, lockout after 5 failed attempts for 15 minutes, generic error messages.
 - Forced password change on first login (`mustChangePassword`).
 - Role-based route guards for Student (/dashboard, /contests, /contest/:id/lobby, /contest/:id/arena, /contest/:id/result, /contest/:id/review, /leaderboard, /profile) and Admin (/admin, /admin/students, /admin/questions, /admin/contests, /admin/audit).
 
 4. Time & Data models:
+
 - Store all timestamps in UTC; display everywhere in Asia/Kolkata (IST).
-- Seed demo data: 1 admin, demo students, sample questions (5 MCQ + 3 coding), 1 closed contest with leaderboard, and 1 live/upcoming contest.
+- Start with an empty database. Provision real admin and student accounts, questions, and contests through the admin workflows.
 - Contest status (scheduled/live/closed) is derived from startTime and endTime; only `draft` is a stored state.
 - 20 marks total per contest: 5 MCQs (1 mark each) + 3 coding problems (Easy 3, Medium 5, Hard 7).
 
 5. Public entry points:
+
 - Homepage hero matching the dark glassy aesthetic, login page, rules page, and not-found route.
 
 This project was built with [Lovable](https://lovable.dev).

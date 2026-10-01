@@ -1,6 +1,7 @@
 # Phase 2: Complete Homepage Landing Page
 
 ## Goal
+
 Replace the current simple homepage with a production-ready, data-backed contest landing page that keeps nilgiriContest’s dark glass and blue-accent identity while making motion optional and every section mobile-safe.
 
 ## What will be built
@@ -38,6 +39,7 @@ Replace the current simple homepage with a production-ready, data-backed contest
    - Confirm the preview reports no build, runtime, console, or network errors and ensure route metadata remains complete.
 
 ## Technical details
+
 - The public database function will use a fixed search path, explicit execution grants, aggregate-only output, and deterministic ranking by score, time, then submission time.
 - Homepage data will use the existing query layer and TanStack Query rather than page-load seeding or client-side access to protected tables.
 - New visual values will be semantic tokens in the global theme; homepage JSX will use those tokens and the existing Button component.

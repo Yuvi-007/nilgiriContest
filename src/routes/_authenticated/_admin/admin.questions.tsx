@@ -37,7 +37,19 @@ const emptyDraft: QuestionDraft = {
   testCasesText: "[]",
 };
 
-function draftFromQuestion(question: any): QuestionDraft {
+type QuestionRow = {
+  id: string;
+  type: "mcq" | "coding";
+  title: string;
+  body: string;
+  options: unknown;
+  correct_option: number | null;
+  difficulty: "easy" | "medium" | "hard" | null;
+  code_language: string | null;
+  test_cases: unknown;
+};
+
+function draftFromQuestion(question: QuestionRow): QuestionDraft {
   return {
     id: question.id,
     type: question.type,

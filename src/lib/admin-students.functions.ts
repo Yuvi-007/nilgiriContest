@@ -106,13 +106,11 @@ export const resetStudentPassword = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     await admin.from("profiles").update({ must_change_password: true }).eq("id", data.userId);
     await admin.from("login_attempts").delete().eq("login_id", profile.login_id);
-    await admin
-      .from("audit_log")
-      .insert({
-        actor_login_id: actorLoginId,
-        action: "student_password_reset",
-        details: { login_id: profile.login_id },
-      });
+    await admin.from("audit_log").insert({
+      actor_login_id: actorLoginId,
+      action: "student_password_reset",
+      details: { login_id: profile.login_id },
+    });
     return { loginId: profile.login_id, fullName: profile.full_name, temporaryPassword };
   });
 
@@ -125,13 +123,11 @@ export const unlockStudent = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { admin, actorLoginId } = await requireAdmin(data.accessToken);
     await admin.from("login_attempts").delete().eq("login_id", data.loginId);
-    await admin
-      .from("audit_log")
-      .insert({
-        actor_login_id: actorLoginId,
-        action: "student_unlocked",
-        details: { login_id: data.loginId },
-      });
+    await admin.from("audit_log").insert({
+      actor_login_id: actorLoginId,
+      action: "student_unlocked",
+      details: { login_id: data.loginId },
+    });
     return true;
   });
 
