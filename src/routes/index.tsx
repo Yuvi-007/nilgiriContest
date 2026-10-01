@@ -131,13 +131,9 @@ function Home() {
   const { auth } = useAuth();
   const { data, isLoading, isError } = useQuery(homepageQuery);
   const primaryLabel = auth ? (data?.activeContest && auth.role === "student" ? "Enter Contest" : "Open dashboard") : "Enter Contest";
-
-  const PrimaryAction = () => {
-    if (auth?.role === "student" && data?.activeContest) {
-      return <Link to="/contest/$id/lobby" params={{ id: data.activeContest.id }}>{primaryLabel}<ArrowRight /></Link>;
-    }
-    return <Link to={auth ? homeFor(auth.role) : "/login"}>{primaryLabel}<ArrowRight /></Link>;
-  };
+  const primaryHref = auth?.role === "student" && data?.activeContest
+    ? `/contest/${data.activeContest.id}/lobby`
+    : auth ? homeFor(auth.role) : "/login";
 
   return (
     <div className="relative overflow-hidden bg-background">
@@ -160,7 +156,7 @@ function Home() {
             </p>
             <div className="reveal-word delay-6 mt-9 flex flex-wrap gap-3">
               <Button asChild size="lg" className="shimmer-button bg-gradient-primary px-7 shadow-glow">
-                <PrimaryAction />
+                <a href={primaryHref}>{primaryLabel}<ArrowRight /></a>
               </Button>
               <Button asChild size="lg" variant="ghost" className="border border-border bg-secondary/30 px-7">
                 <Link to="/rules">View Rules</Link>
@@ -220,7 +216,7 @@ function Home() {
       </section>
 
       <section className="cta-band relative overflow-hidden border-b border-border py-28 text-center">
-        <div className="relative z-10 mx-auto max-w-3xl px-4"><Activity className="mx-auto h-7 w-7 text-cyan" /><h2 className="mt-5 text-4xl font-black tracking-normal sm:text-5xl">Your next rank starts here.</h2><p className="mx-auto mt-4 max-w-xl text-muted-foreground">Show up, solve clearly, and let every fair result speak for itself.</p><Button asChild size="lg" className="shimmer-button mt-8 bg-gradient-primary px-8 shadow-glow"><PrimaryAction /></Button></div>
+        <div className="relative z-10 mx-auto max-w-3xl px-4"><Activity className="mx-auto h-7 w-7 text-cyan" /><h2 className="mt-5 text-4xl font-black tracking-normal sm:text-5xl">Your next rank starts here.</h2><p className="mx-auto mt-4 max-w-xl text-muted-foreground">Show up, solve clearly, and let every fair result speak for itself.</p><Button asChild size="lg" className="shimmer-button mt-8 bg-gradient-primary px-8 shadow-glow"><a href={primaryHref}>{primaryLabel}<ArrowRight /></a></Button></div>
       </section>
 
       <footer className="bg-bg2 py-10">
