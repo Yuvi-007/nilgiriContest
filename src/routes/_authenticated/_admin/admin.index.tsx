@@ -27,7 +27,7 @@ function AdminHome() {
   });
   const live = contests.filter((c) => contestStatus(c) === "live").length;
   const cards = [
-    ["Students", `${counts?.students ?? "…"} / 90`],
+    ["Students", counts?.students ?? "…"],
     ["Questions", counts?.questions ?? "…"],
     ["Contests", contests.length],
     ["Live now", live],

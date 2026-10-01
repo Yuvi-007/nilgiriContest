@@ -115,7 +115,7 @@ function Students() {
 
   return (
     <>
-      <PageHeader title="Students" subtitle={`${data.length} of 90 seats used`}>
+      <PageHeader title="Students" subtitle={`${data.length} student${data.length !== 1 ? "s" : ""} registered`}>
         <Button
           onClick={() => {
             setMessage(null);

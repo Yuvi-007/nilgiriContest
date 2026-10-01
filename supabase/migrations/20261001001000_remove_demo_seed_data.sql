@@ -1,0 +1,3 @@
+-- This migration is intentionally a no-op.
+-- The demo seed data was removed directly from the foundation migration (20261001000000)
+-- so there is nothing to clean up here. Kept in history to preserve sequence numbering.
