@@ -137,10 +137,10 @@ function Home() {
 
   return (
     <div className="relative overflow-hidden bg-background">
-      <section className="hero-shell relative min-h-[calc(100svh-4rem)] border-b border-border">
+      <section className="hero-shell relative border-b border-border">
         <div className="aurora" />
         <div className="particle-field" aria-hidden="true">{Array.from({ length: 14 }, (_, i) => <i key={i} />)}</div>
-        <div className="relative z-10 mx-auto grid min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-16 px-4 py-16 lg:grid-cols-[1.02fr_.98fr] lg:py-20">
+        <div className="relative z-10 mx-auto grid min-h-[min(820px,calc(100svh-4rem))] max-w-6xl items-center gap-16 px-4 py-16 lg:grid-cols-[1.02fr_.98fr] lg:py-20">
           <div>
             <div className="reveal-word inline-flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-3 py-1.5 text-xs text-muted-foreground">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green" /> Cohort Daily Contests
