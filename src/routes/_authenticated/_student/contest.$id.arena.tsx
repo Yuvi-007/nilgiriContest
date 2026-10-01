@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Code2, Maximize, Play, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNow } from "@/components/Navbar";
+import { useNow } from "@/lib/useNow";
 import { supabase } from "@/integrations/supabase/client";
 import { runCodingTests } from "@/lib/judge.functions";
 import { contestQuery, contestQuestionsQuery } from "@/lib/queries";

@@ -79,7 +79,7 @@ function ScoreBar({ score, max, color }: { score: number; max: number; color: st
 }
 
 /* ── Podium card (top 3) ── */
-function PodiumCard({ row, rank, highlight }: { row: LeaderRow; rank: number; highlight?: string }) {
+function PodiumCard({ row, rank, highlight }: { row: LeaderRow; rank: number; highlight?: string | undefined }) {
   const isMe = row.userId === highlight;
   const maxScore = 20 * row.contests;
   const pct = maxScore > 0 ? Math.round((row.score / maxScore) * 100) : 0;
@@ -124,7 +124,7 @@ function PodiumCard({ row, rank, highlight }: { row: LeaderRow; rank: number; hi
 }
 
 /* ── Main table row ── */
-function TableRow({ row, rank, highlight, animDelay }: { row: LeaderRow; rank: number; highlight?: string; animDelay: number }) {
+function TableRow({ row, rank, highlight, animDelay }: { row: LeaderRow; rank: number; highlight?: string | undefined; animDelay: number }) {
   const isMe = row.userId === highlight;
   const maxScore = 20 * row.contests;
   const pct = maxScore > 0 ? Math.round((row.score / maxScore) * 100) : 0;

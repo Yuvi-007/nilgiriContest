@@ -4,7 +4,7 @@ import { CheckCircle2, CircleAlert, Maximize2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Page, GlassCard, StatusPill } from "@/components/ui-kit";
-import { useNow } from "@/components/Navbar";
+import { useNow } from "@/lib/useNow";
 import { contestQuery } from "@/lib/queries";
 import { contestStatus, formatIST, hms } from "@/lib/time";
 
