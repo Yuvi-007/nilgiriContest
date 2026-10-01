@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { KeyRound, LockOpen, Plus, Upload } from "lucide-react";
-import { useState } from "react";
+import { KeyRound, LockOpen, Plus, Upload, Search, CheckCircle2, AlertCircle, X } from "lucide-react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/ui-kit";
@@ -26,7 +26,8 @@ function Students() {
   const [loginId, setLoginId] = useState("");
   const [fullName, setFullName] = useState("");
   const [csv, setCsv] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const [credentials, setCredentials] = useState<
     Array<{ loginId: string; fullName: string; temporaryPassword: string }>
   >([]);
@@ -43,6 +44,13 @@ function Students() {
       return (profiles ?? []).filter((p) => students.has(p.id));
     },
   });
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return data;
+    return data.filter(
+      (p) => p.login_id.toLowerCase().includes(q) || p.full_name.toLowerCase().includes(q),
+    );
+  }, [data, search]);
 
   async function accessToken() {
     const { data: sessionData } = await supabase.auth.getSession();
@@ -58,10 +66,10 @@ function Students() {
       setCredentials(result);
       setLoginId("");
       setFullName("");
-      setMessage("Student created. Save the temporary password before closing this window.");
+      setMessage({ text: "Student created. Save the temporary password before closing this window.", type: "success" });
       await queryClient.invalidateQueries({ queryKey: ["admin-students"] });
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Student could not be created.");
+      setMessage({ text: error instanceof Error ? error.message : "Student could not be created.", type: "error" });
     }
   }
 
@@ -84,12 +92,13 @@ function Students() {
       const result = await create({ data: { accessToken: await accessToken(), students } });
       setCredentials(result);
       setCsv("");
-      setMessage(
-        `${result.length} students created. Save the temporary passwords before closing this window.`,
-      );
+      setMessage({
+        text: `${result.length} students created. Save the temporary passwords before closing this window.`,
+        type: "success",
+      });
       await queryClient.invalidateQueries({ queryKey: ["admin-students"] });
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "CSV import failed.");
+      setMessage({ text: error instanceof Error ? error.message : "CSV import failed.", type: "error" });
     }
   }
 
@@ -97,19 +106,19 @@ function Students() {
     try {
       const result = await resetPassword({ data: { accessToken: await accessToken(), userId } });
       setCredentials([result]);
-      setMessage("Password reset. Save the temporary password before closing this window.");
+      setMessage({ text: "Password reset. Save the temporary password before closing this window.", type: "success" });
       await queryClient.invalidateQueries({ queryKey: ["admin-students"] });
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Password reset failed.");
+      setMessage({ text: error instanceof Error ? error.message : "Password reset failed.", type: "error" });
     }
   }
 
   async function clearLock(loginIdToUnlock: string) {
     try {
       await unlock({ data: { accessToken: await accessToken(), loginId: loginIdToUnlock } });
-      setMessage(`${loginIdToUnlock} unlocked.`);
+      setMessage({ text: `${loginIdToUnlock} unlocked.`, type: "success" });
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unlock failed.");
+      setMessage({ text: error instanceof Error ? error.message : "Unlock failed.", type: "error" });
     }
   }
 
@@ -122,6 +131,7 @@ function Students() {
             setLoginId("");
             setFullName("");
           }}
+          className="bg-gradient-primary shadow-glow"
         >
           <Plus className="h-4 w-4" /> New student
         </Button>
@@ -168,10 +178,44 @@ function Students() {
         </div>
       </div>
       {message && (
-        <p className="mb-5 rounded-md border border-border bg-bg3 p-3 text-sm text-muted-foreground">
-          {message}
-        </p>
+        <div
+          className={`mb-5 flex items-start gap-3 rounded-xl border p-4 text-sm ${
+            message.type === "success"
+              ? "border-green/30 bg-green/8 text-green"
+              : "border-destructive/30 bg-destructive/8 text-destructive"
+          }`}
+        >
+          {message.type === "success" ? (
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+          ) : (
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          )}
+          <span className="flex-1">{message.text}</span>
+          <button onClick={() => setMessage(null)} className="opacity-60 hover:opacity-100">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       )}
+
+      {/* Search bar */}
+      <div className="mb-4 relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by ID or name…"
+          className="h-10 w-full rounded-xl border border-border bg-bg3 pl-9 pr-4 text-sm outline-none transition-colors focus:border-violet/50 focus:ring-1 focus:ring-violet/30"
+        />
+        {search && (
+          <button
+            onClick={() => setSearch("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
       <div className="glass overflow-x-auto rounded-2xl">
         <table className="w-full text-sm">
           <thead className="text-left text-xs uppercase text-muted-foreground">
@@ -184,9 +228,16 @@ function Students() {
             </tr>
           </thead>
           <tbody>
-            {data.map((p) => (
-              <tr key={p.id} className="border-b border-border/50 last:border-0">
-                <td className="p-3 font-mono">{p.login_id}</td>
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={5} className="p-8 text-center text-sm text-muted-foreground">
+                  {search ? `No students match "${search}"` : "No students yet."}
+                </td>
+              </tr>
+            )}
+            {filtered.map((p) => (
+              <tr key={p.id} className="border-b border-border/50 last:border-0 transition-colors hover:bg-accent/30">
+                <td className="p-3 font-mono text-cyan">{p.login_id}</td>
                 <td className="p-3">{p.full_name}</td>
                 <td className="p-3">
                   {p.must_change_password ? (

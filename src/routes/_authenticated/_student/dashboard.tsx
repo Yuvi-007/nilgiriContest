@@ -1,3 +1,4 @@
+import React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
@@ -6,6 +7,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { ContestCard } from "@/components/ContestCard";
 import { contestsQuery, dashboardHistoryQuery, leaderboardQuery } from "@/lib/queries";
 import { contestStatus } from "@/lib/time";
+import { Trophy, Star, Zap, TrendingUp, ArrowRight, Medal } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/_student/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — nilgiriContest" }] }),
@@ -23,42 +25,127 @@ function Dashboard() {
   const me = board[rank];
   const active = contests.filter((c) => contestStatus(c) !== "closed");
 
+  const firstName = authInfo.fullName.split(" ")[0];
+  const initials = authInfo.fullName
+    .split(" ")
+    .map((n: string) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  const statCards: {
+    label: string;
+    value: number | string;
+    icon: React.ComponentType<{ className?: string }>;
+    color: string;
+    bg: string;
+    border: string;
+    gradient?: boolean;
+    subtext: string;
+  }[] = [
+    {
+      label: "Overall rank",
+      value: me ? `#${rank + 1}` : "—",
+      icon: Trophy,
+      color: "text-gold",
+      bg: "bg-gold/10",
+      border: "border-gold/20",
+      subtext: me ? `out of ${board.length} students` : "Complete a contest to rank",
+    },
+    {
+      label: "Total score",
+      value: me ? me.score.toFixed(1) : "0",
+      icon: Star,
+      color: "text-cyan",
+      bg: "bg-cyan/10",
+      border: "border-cyan/20",
+      gradient: true,
+      subtext: "cumulative marks",
+    },
+    {
+      label: "Contests taken",
+      value: me?.contests ?? 0,
+      icon: Zap,
+      color: "text-violet",
+      bg: "bg-violet/10",
+      border: "border-violet/20",
+      subtext: active.length > 0 ? `${active.length} active now` : "none active",
+    },
+  ];
+
   return (
     <Page>
-      <PageHeader
-        title={`Hi, ${authInfo.fullName.split(" ")[0]}`}
-        subtitle="Here's what's happening in the cohort."
-      />
-      <div className="mb-8 grid gap-4 sm:grid-cols-3">
-        <GlassCard>
-          <div className="text-xs text-muted-foreground">Overall rank</div>
-          <div className="mt-1 font-mono text-3xl font-bold">{me ? `#${rank + 1}` : "—"}</div>
-        </GlassCard>
-        <GlassCard>
-          <div className="text-xs text-muted-foreground">Total score</div>
-          <div className="mt-1 font-mono text-3xl font-bold text-gradient">
-            {me ? me.score.toFixed(1) : "0"}
+      {/* Welcome banner */}
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-violet/20 bg-gradient-to-r from-violet/8 via-transparent to-cyan/8 p-6">
+        <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-primary text-xl font-bold text-white shadow-glow">
+            {initials}
           </div>
-        </GlassCard>
-        <GlassCard>
-          <div className="text-xs text-muted-foreground">Contests taken</div>
-          <div className="mt-1 font-mono text-3xl font-bold">{me?.contests ?? 0}</div>
-        </GlassCard>
+          <div>
+            <h1 className="text-2xl font-extrabold tracking-tight">
+              Hi, <span className="text-gradient">{firstName}</span> 👋
+            </h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {authInfo.fullName} · Student
+            </p>
+          </div>
+        </div>
+        <Link
+          to="/contests"
+          className="flex items-center gap-2 rounded-xl border border-violet/30 bg-violet/10 px-4 py-2 text-sm font-medium text-violet transition-all hover:bg-violet/20 hover:shadow-lg"
+        >
+          View all contests <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
+
+      {/* Stat cards */}
+      <div className="mb-8 grid gap-4 sm:grid-cols-3">
+        {statCards.map(({ label, value, icon: Icon, color, bg, border, gradient, subtext }) => (
+          <div
+            key={label}
+            className={`glass rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 ${border}`}
+          >
+            <div className="flex items-start justify-between">
+              <div className={`rounded-xl ${bg} p-2.5`}>
+                <Icon className={`h-5 w-5 ${color}`} />
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="text-xs text-muted-foreground">{label}</div>
+              <div
+                className={`mt-1 font-mono text-3xl font-bold ${gradient ? "text-gradient" : color}`}
+              >
+                {value}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{subtext}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Performance history */}
       <section className="mb-10" aria-labelledby="performance-heading">
-        <div className="mb-4">
-          <h2 id="performance-heading" className="text-lg font-bold">
-            Performance history
-          </h2>
-          <p className="text-sm text-muted-foreground">Closed ranked contests only.</p>
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 id="performance-heading" className="flex items-center gap-2 text-lg font-bold">
+              <TrendingUp className="h-5 w-5 text-violet" />
+              Performance history
+            </h2>
+            <p className="text-sm text-muted-foreground">Closed ranked contests only.</p>
+          </div>
         </div>
         {historyLoading ? (
           <GlassCard>
-            <p className="text-sm text-muted-foreground">Loading performance history...</p>
+            <div className="flex items-center gap-3">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-violet border-t-transparent" />
+              <p className="text-sm text-muted-foreground">Loading performance history…</p>
+            </div>
           </GlassCard>
         ) : history.length === 0 ? (
-          <GlassCard>
-            <p className="text-sm text-muted-foreground">
+          <GlassCard className="text-center py-10">
+            <Medal className="mx-auto mb-3 h-10 w-10 text-muted-foreground/40" />
+            <p className="font-semibold text-muted-foreground">No contest history yet</p>
+            <p className="mt-1 text-sm text-muted-foreground/70">
               Complete a ranked contest to unlock score, rank, and time trends.
             </p>
           </GlassCard>
@@ -89,8 +176,13 @@ function Dashboard() {
           </div>
         )}
       </section>
+
+      {/* Active contests */}
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold">Live & upcoming</h2>
+        <h2 className="flex items-center gap-2 text-lg font-bold">
+          <Zap className="h-5 w-5 text-gold" />
+          Live &amp; upcoming
+        </h2>
         <Link to="/contests" className="text-sm text-violet hover:underline">
           All contests →
         </Link>
@@ -99,7 +191,12 @@ function Dashboard() {
         {active.map((c) => (
           <ContestCard key={c.id} c={c} />
         ))}
-        {active.length === 0 && <p className="text-muted-foreground">No upcoming contests.</p>}
+        {active.length === 0 && (
+          <GlassCard className="col-span-full text-center py-10">
+            <Trophy className="mx-auto mb-3 h-10 w-10 text-muted-foreground/30" />
+            <p className="text-muted-foreground">No upcoming contests right now.</p>
+          </GlassCard>
+        )}
       </div>
     </Page>
   );

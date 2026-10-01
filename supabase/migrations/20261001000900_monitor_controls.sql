@@ -19,7 +19,7 @@ language sql stable security definer set search_path = public as $$
   select a.id, p.id, p.login_id, p.full_name,
     coalesce(cp.status, case when a.status = 'submitted' then 'submitted' when a.status = 'terminated' then 'terminated' else 'not_started' end),
     a.started_at, cp.last_seen_at, coalesce(cp.violations, a.violations, 0), cp.submitted_at,
-    case when a.answers is null then 0 else jsonb_object_length(a.answers) end,
+    case when a.answers is null then 0 else (select count(*) from jsonb_object_keys(a.answers))::int end,
     coalesce(a.extra_time_sec, 0),
     case when a.started_at is null then null else least(a.started_at + ((c.duration_minutes * 60 + a.extra_time_sec) || ' seconds')::interval, c.end_time) end
   from public.profiles p
