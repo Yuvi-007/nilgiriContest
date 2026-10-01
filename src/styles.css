@@ -574,3 +574,35 @@
     transform: none;
   }
 }
+
+/* ── Secure Exam Protections ── */
+.secure-exam-lock,
+.secure-exam-lock * {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+.secure-exam-lock textarea,
+.secure-exam-lock input {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  user-select: text !important;
+}
+
+@media print {
+  .secure-exam-lock {
+    display: none !important;
+  }
+  body::after {
+    content: "Printing or exporting exam materials is strictly prohibited and logged.";
+    display: block;
+    padding: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+  }
+}

@@ -150,3 +150,31 @@ export const dashboardHistoryQuery = (userId: string) =>
       });
     },
   });
+
+export type StudentAttemptStatus = {
+  status: "not_started" | "in_progress" | "submitted" | "terminated" | "not_found" | "unauthenticated";
+  attempt_id?: string;
+  started_at?: string;
+  submitted_at?: string;
+  deadline?: string;
+  violations?: number;
+  score?: number;
+  is_submitted?: boolean;
+};
+
+export const studentAttemptStatusQuery = (contestId: string) =>
+  queryOptions({
+    queryKey: ["student-attempt-status", contestId],
+    queryFn: async (): Promise<StudentAttemptStatus> => {
+      const { data, error } = await (supabase.rpc as unknown as (
+        fn: string,
+        args?: Record<string, unknown>,
+      ) => Promise<{ data: unknown; error: unknown }>)("get_student_attempt_status", {
+        _contest_id: contestId,
+      });
+      if (error) {
+        return { status: "not_started" };
+      }
+      return (data as StudentAttemptStatus) ?? { status: "not_started" };
+    },
+  });
